@@ -1,5 +1,5 @@
-import React from "react";
-import { Form, Input, Button } from "antd";
+import React, { useEffect } from "react";
+import { Form, Input } from "antd";
 
 const FormItem = Form.Item;
 
@@ -12,39 +12,37 @@ const layout = {
   },
 };
 
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
-
-const LndForm = ({ ref, saveLndAccount, addLndAccountFailure }) => {
+const LndForm = ({ initialValues = {}, submitHook = () => {} }) => {
   const [form] = Form.useForm();
+  submitHook(form);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        name: initialValues.name,
+        description: initialValues.description,
+        macaroon: initialValues.macaroon,
+        url: initialValues.url,
+      });
+    }
+  }, [form, initialValues]);
 
   return (
-    <Form
-      {...layout}
-      form={form}
-      name="basic"
-      onFinishFailed={addLndAccountFailure}
-      onFinish={(values) => saveLndAccount(values, form)}
-      initialValues={{
-        name: "LND",
-        url: "",
-        macaroon: "",
-      }}
-    >
+    <Form {...layout} form={form} name="basic" layout="vertical">
       <FormItem
         label="Name"
         name="name"
         rules={[
           {
             required: true,
-            message: "Please input your username!",
+            message: "Please set a name for the account!",
           },
         ]}
       >
+        <Input />
+      </FormItem>
+
+      <FormItem label="Description" name="description">
         <Input />
       </FormItem>
 
@@ -73,12 +71,6 @@ const LndForm = ({ ref, saveLndAccount, addLndAccountFailure }) => {
         ]}
       >
         <Input />
-      </FormItem>
-
-      <FormItem {...tailLayout}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
       </FormItem>
     </Form>
   );

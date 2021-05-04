@@ -1,36 +1,65 @@
 import React from "react";
-import { Typography, Button, List, Row } from "antd";
+import { useHistory } from "react-router-dom";
+import { List, Button } from "antd";
 
-const ListData = ({ data, title, onResetCallback }) => {
+const ListData = ({
+  data,
+  setCurrentAccount = () => {},
+  deleteAccount = () => {},
+}) => {
+  const history = useHistory();
+
+  const goToEditAccount = (accountId) => {
+    return history.push({
+      pathname: "/account",
+      state: { accountId },
+    });
+  };
+
+  function getActions(account = {}) {
+    const actions = [];
+    if (account.isCurrent === false) {
+      actions.push(
+        <Button type="text" danger onClick={() => deleteAccount(account.id)}>
+          Delete
+        </Button>
+      );
+      actions.push(
+        <Button
+          type="primary"
+          shape="round"
+          onClick={() => setCurrentAccount(account.id)}
+        >
+          Set Current
+        </Button>
+      );
+    }
+
+    actions.push(
+      <Button type="link" onClick={() => goToEditAccount(account.id)}>
+        More
+      </Button>
+    );
+    return actions;
+  }
+
   return data.length > 0 ? (
     <>
-      <Row align="middle" justify="space-between">
-        <Typography.Title level={2}>{title}</Typography.Title>
-
-        <div className="reset-button-wrapper">
-          <Button
-            shape="round"
-            type="primary"
-            onClick={onResetCallback}
-            className="reset-button"
-          >
-            Reset1
-          </Button>
-        </div>
-      </Row>
-
       <List
-        size="default"
+        size="small"
         dataSource={data}
-        itemLayout="vertical"
+        itemLayout="horizontal"
+        bordered
         renderItem={(item) => (
-          <List.Item key={item.title}>
-            <List.Item.Meta title={item.title} description={item.description} />
+          <List.Item key={item.id} actions={getActions(item)}>
+            <List.Item.Meta title={item.name} description={item.description} />
           </List.Item>
         )}
       />
     </>
-  ) : null;
+  ) : (
+    <span>No account</span>
+  );
 };
 
 export default ListData;

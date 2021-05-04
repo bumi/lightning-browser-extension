@@ -1,30 +1,29 @@
 import React from "react";
 import { calcFiatFromSatoshi } from "../../../common/utils/helpers";
-import { formatRelative, subDays } from "date-fns";
+import { formatRelative } from "date-fns";
 
 import "./styles.scss";
 
-import { Empty, List, Avatar, Icon, Tooltip } from "antd";
+import { Empty, List, Avatar, Tooltip } from "antd";
 import { StockOutlined } from "@ant-design/icons";
-import { sortByFieldAscending } from  '../../../common/utils/helpers.js'
+import { sortByFieldAscending } from "../../../common/utils/helpers.js";
 
 class Transactions extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     if (this.props.transactions?.length > 0) {
       return (
         <div class="transactions--container">
           <List
             itemLayout="horizontal"
-            dataSource={sortByFieldAscending(this.props.transactions, 'creation_date')}
+            dataSource={sortByFieldAscending(
+              this.props.transactions,
+              "creation_date"
+            )}
             renderItem={(item) => (
               <List.Item className="transactions--container__item">
                 <List.Item.Meta
                   avatar={<Avatar icon={<StockOutlined />} />}
-                  title={item.value + " " + "Satoshi"}
+                  title={`${item.value} Satoshi`}
                   description={
                     calcFiatFromSatoshi(
                       this.props.exchangeRate ?? null,
