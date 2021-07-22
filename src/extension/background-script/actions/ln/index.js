@@ -1,6 +1,6 @@
 import state from "../../state";
 import sendPayment from "./sendPayment";
-import PubSub from 'pubsub-js';
+import PubSub from "pubsub-js";
 
 const connectorCall = (method) => {
   return (message, sender) => {

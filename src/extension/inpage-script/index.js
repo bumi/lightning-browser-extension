@@ -42,6 +42,17 @@ if (document) {
       if (!response.enabled) {
         return;
       }
+      if (paymentRequest.toLowerCase().startsWith("lnurl")) {
+        return window.webln
+          .lnurl(paymentRequest)
+          .then((r) => {
+            alert(JSON.stringify(r));
+          })
+          .catch((e) => {
+            console.log(e);
+            alert(`Error: ${e.message}`);
+          });
+      }
       return window.webln
         .sendPayment(paymentRequest)
         .then((r) => {
